@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghost Architecture Visualizer</title>
+  <meta name="description" content="Interactive breakdown of the Ghost CMS architecture, with request-flow walkthroughs and an AI fact-check audit.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314213D'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23FBFBF8' font-family='Arial'%3EG%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">G</span>
+      <div>
+        <p class="brand-title">Ghost Architecture Visualizer</p>
+        <p class="brand-sub">How the Ghost CMS is built, and what the AI got wrong</p>
+      </div>
+    </div>
+    <nav aria-label="Main">
+      <ul class="nav-list">
+        <li><a href="#overview" data-route="overview">Overview</a></li>
+        <li><a href="#components" data-route="components">Components</a></li>
+        <li><a href="#flows" data-route="flows">Request flows</a></li>
+        <li><a href="#audit" data-route="audit">AI audit</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- OVERVIEW -->
+    <section id="view-overview" class="view" aria-labelledby="overview-title">
+      <h1 id="overview-title">Ghost: a modular monolith</h1>
+      <p class="lead" id="overview-tagline"></p>
+
+      <div class="fact-grid" id="fact-grid"></div>
+
+      <div class="card">
+        <h2>Architectural style</h2>
+        <p id="style-explained"></p>
+      </div>
+
+      <div class="card">
+        <h2>Architecture map</h2>
+        <p class="hint">Select any component to see its details.</p>
+        <div class="legend" aria-label="Legend">
+          <span class="badge badge-verified">Verified in repo</span>
+          <span class="badge badge-knowledge">AI knowledge, not yet verified</span>
+        </div>
+        <div id="diagram" class="diagram"></div>
+      </div>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section id="view-components" class="view" aria-labelledby="components-title" hidden>
+      <h1 id="components-title">Components</h1>
+
+      <form id="search-form" class="search-form" novalidate>
+        <div class="field">
+          <label for="search-input">Search components</label>
+          <input id="search-input" name="q" type="search" maxlength="100" autocomplete="off" placeholder="e.g. database, Stripe, API">
+        </div>
+        <div class="field">
+          <label for="layer-select">Layer</label>
+          <select id="layer-select" name="layer">
+            <option value="all">All layers</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="status-select">Source status</label>
+          <select id="status-select" name="status">
+            <option value="all">Any</option>
+            <option value="verified">Verified in repo</option>
+            <option value="knowledge">AI knowledge only</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Search</button>
+          <button type="button" id="reset-search" class="btn">Reset</button>
+        </div>
+      </form>
+
+      <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+
+      <div class="components-layout">
+        <ul id="component-list" class="component-list" aria-label="Component results"></ul>
+        <aside id="detail-panel" class="detail-panel" aria-live="polite" aria-labelledby="detail-title">
+          <h2 id="detail-title">Component details</h2>
+          <p class="hint">Select a component to see what it does, where it lives in the repo, and the evidence for it.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- FLOWS -->
+    <section id="view-flows" class="view" aria-labelledby="flows-title" hidden>
+      <h1 id="flows-title">Request flows</h1>
+      <p class="lead">Step through how a request moves through Ghost. The active component lights up on the map.</p>
+
+      <div class="field flow-picker">
+        <label for="flow-select">Choose a flow</label>
+        <select id="flow-select"></select>
+      </div>
+
+      <div class="flow-layout">
+        <div class="card">
+          <p class="step-count" id="step-count"></p>
+          <h2 id="step-component"></h2>
+          <p id="step-text" class="step-text"></p>
+          <div class="flow-controls">
+            <button type="button" id="prev-step" class="btn">Previous</button>
+            <button type="button" id="next-step" class="btn btn-primary">Next</button>
+            <button type="button" id="restart-flow" class="btn">Restart</button>
+          </div>
+          <ol id="step-list" class="step-list"></ol>
+        </div>
+        <div class="card">
+          <h2>Where this step happens</h2>
+          <div id="flow-diagram" class="diagram diagram-compact"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIT -->
+    <section id="view-audit" class="view" aria-labelledby="audit-title" hidden>
+      <h1 id="audit-title">AI verification audit</h1>
+      <p class="lead">The AI's first architectural breakdown, checked against the TryGhost/Ghost GitHub repository.</p>
+
+      <div class="audit-summary" id="audit-summary"></div>
+
+      <div class="table-wrap">
+        <table class="audit-table">
+          <caption class="sr-only">AI claims and what verification found</caption>
+          <thead>
+            <tr>
+              <th scope="col">Claim</th>
+              <th scope="col">What the AI said first</th>
+              <th scope="col">What verification found</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody id="audit-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- NOT FOUND -->
+    <section id="view-notfound" class="view" aria-labelledby="notfound-title" hidden>
+      <h1 id="notfound-title">Page not found</h1>
+      <p>That page doesn't exist. <a href="#overview">Go back to the overview</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built as a course companion prototype. Source: <a href="https://github.com/TryGhost/Ghost" rel="noopener">TryGhost/Ghost</a> (MIT). Ghost is a trademark of the Ghost Foundation; this project is not affiliated with it.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
