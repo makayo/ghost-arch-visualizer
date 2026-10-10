@@ -52,8 +52,8 @@ None. The app is fully static and makes no API calls, so there is nothing to con
 ### Run locally
 
 ```bash
-git clone https://github.com/<your-github-username>/ghost-architecture-visualizer.git
-cd ghost-architecture-visualizer
+git clone https://github.com/makayo/ghost-arch-visualizer.git
+cd ghost-arch-visualizer
 ```
 
 Then either open `index.html` directly in your browser, or serve the folder:
