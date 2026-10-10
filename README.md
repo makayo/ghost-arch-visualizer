@@ -2,8 +2,7 @@
 
 An interactive dashboard that breaks down the architecture of [Ghost](https://github.com/TryGhost/Ghost), the open-source Node.js publishing platform, and documents how an AI-generated architecture breakdown was fact-checked against Ghost's source repository.
 
-**Live site:** `https://<your-github-username>.github.io/ghost-architecture-visualizer/`
-**Repository:** `https://github.com/<your-github-username>/ghost-architecture-visualizer`
+**Live site:** `https://makayo.github.io/ghost-arch-visualizer/`
 
 ---
 
